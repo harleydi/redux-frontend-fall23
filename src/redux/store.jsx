@@ -1,8 +1,12 @@
+import { configureStore } from '@reduxjs/toolkit'
 import userReducer from './userSlice'
-import { configureStore } from "@reduxjs/toolkit";
+import authReducer from './authSlice'
+
+// auth ex. auth reducer, authSlice, state = isAuth
 
 export default configureStore({
     reducer: {
-        user: userReducer
+        user: userReducer,
+        auth: authReducer
     }
 })

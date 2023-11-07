@@ -12,13 +12,18 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import {useSelector, useDispatch} from "react-redux"
+import { logout } from '../redux/authSlice';
 
 const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+// const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const isAuth = useSelector(state => state.auth.isAuth)
+  const dispatch = useDispatch()
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -31,9 +36,22 @@ function ResponsiveAppBar() {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = (name) => {
+    console.log(name)
+    name === 'Logout' && dispatch(logout())
     setAnchorElUser(null);
   };
+  let settings = [
+    {name: 'Register', url: '/register'}, 
+    {name: 'Log in', url: '/login'}
+  ]
+  isAuth && (settings = [
+    {name: 'Profile', url: '/'},
+    {name: 'Account', url: '/'},
+    {name: 'Logout', url: '/'}
+  ])
+
+
 
   return (
     <AppBar position="static">
@@ -44,7 +62,7 @@ function ResponsiveAppBar() {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -55,7 +73,7 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            REDUX
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -99,7 +117,7 @@ function ResponsiveAppBar() {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -134,6 +152,7 @@ function ResponsiveAppBar() {
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
+              key="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
                 vertical: 'top',
@@ -147,11 +166,23 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+              {settings.map((setting) => {
+                // you can run some code here
+                console.log(setting.name)
+                return (
+                <MenuItem key={setting.name} onClick={() => handleCloseUserMenu(setting.name)}>
+                  <Typography 
+                    href={setting.url}
+                    component="a"
+                    textAlign="center"
+                    sx={{
+                      color: 'white',
+                      textDecoration: 'none'
+                    }}
+                    >{setting.name}</Typography>
                 </MenuItem>
-              ))}
+              )}
+              )}
             </Menu>
           </Box>
         </Toolbar>
